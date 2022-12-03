@@ -1,4 +1,4 @@
 # Prolog-Parcial
-# Integrantes:
+Integrantes:
 # Isabella Solarte
 # Daniela Riascos
