@@ -1,0 +1,121 @@
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+%  ESTRUCTURAS DEL LENGUAJE
+%  Elaborado por: Isabella Solarte Sandoval
+%			    Daniela Riascos Urrego
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Aqui definición de hechos y reglas, funciones básicas y recursivas
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%función básica:
+buscar(X,[X|Cola]).
+
+%función recursiva:
+buscar(X,[Cabeza|Cola]):- buscar(X,Cola).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%hechos y reglas para prestar libro
+
+tiene_libro(juan).
+tiene_libro(matias).
+tiene_libro(joaquin).
+
+presta_libro(X,Y,Linea):-tiene_libro(X),Linea:=Linea+20.
+
+%------------------------------
+longitud([],0).
+longitud([Cabeza|Cola],Cont):-longitud(Cola,Aux),Cont is Aux+1.
+suma([],0).
+suma([Cabeza|Cola],Sum):-suma(Cola,S1),Sum is Cabeza +S1.
+promedio(Lista,P):-suma(Lista,Sum),longitud(Lista,Cont),P is Sum/Cont.
+
+
+?-window(_, _,crea_ventana(),"Aplicación",150, 50, 450, 450), 
+  window_brush(_, "SKY.bmp"),update_window().
+
+%crea el menú
+
+crea_ventana(init):- 
+menu(pop_up,_,_,salir(_),"&ARCHIVO"), 
+menu(pop_up,_,_,listas(_),"&LISTAS"),
+menu(pop_up,_,_,logico(_),"&LOGICO").
+
+%Crea el Submenú Salir
+salir(init):-    
+menu(normal,_,_,cerrar_ven(_),"&Salir").
+cerrar_ven(press):- close_window(X).
+
+%Crea el Submenú listas
+listas(init):-    
+menu(normal,_,_,buscar_elem(_),"&Buscar Elemento"),
+%crear el submenu listas
+menu(normal,_,_,promedio_listas(_),"&Promedio Listas").
+%-------------------------------
+
+
+buscar_elem(press):-  
+window(_,_, ventana_buscar(), "Buscar elemento en Lista", 150,50,450,450).
+
+
+
+ventana_buscar(init):- window_brush(_, rgb(166, 129, 182)),
+                    button(_,_,boton_iniciar(_),"&Iniciar",320,35,95,30).
+
+
+
+
+%---- al oprimir el botón se procede a buscar el elemento
+
+boton_iniciar(press):- 
+    
+    read(X,"Digite la lista en la que se va a buscar:"),
+    read(Elem,"Digite el elemento que se va a buscar:"),
+    %esta es una etiqueta
+     text_out(50,100,"La Lista es:"),    
+     %esta es una caja de texto con el nombre de G_lista
+     edit(G_lista,_,edit_func(),"",235,120,150,28),
+    set_text(print(X),G_lista), 
+    (buscar(Elem,X)-> 
+        message("Información","El elemento se encuentra en la lista ",i)
+    else
+        message( "Información", "El elemento no se encuentra en la lista ",s)).
+
+%------------------------------------------------------
+%crear el submenu logico
+logico(init):-
+menu(normal,_,_,prestar_libro(_),"&Prestar Libro"),
+menu(pop_up,_,_,nobles_rufianes(_),"&Ladrones y rufianes").
+
+
+%crear la subfuncion para prestar libro
+prestar_libro(press):-  
+window(_,_,ventana_prestar_libro(), "Quién puede prestar un libro?", 150,50,450,450).
+ventana_prestar_libro(init):-button(_,_,boton_iniciarPL(_),"&Iniciar",320,35,95,30).
+boton_iniciarPL(press):-
+    Linea:=150,
+    text_out(50,100,"Quién le puede prestar un libro a Jimena?"),
+    presta_libro(X,jimena,Linea),
+    text_out(50,Linea,print(X)),ln.
+%crear la subfuncion para ladrones_rufianes
+nobles_rufianes(init):-
+menu(normal,_,_,prestar_l(_),"&Primera pregunta"),
+menu(normal,_,_,prestar_l(_),"&Segunda pregunta"),
+menu(normal,_,_,prestar_l(_),"&Tercera pregunta").
+
+%------------------------------------
+%crear el submenu listas
+
+promedio_listas(press):-
+window(_,_, ventana_promedio_lista(), "Hallar el promedio de una lista", 150,50,450,450).
+ventana_promedio_lista(init):-
+window_brush(_, rgb(166, 129, 182)),
+button(_,_,boton_promedio(_),"&Hallar promedio",220,35,150,30).
+boton_promedio(press):-read(X,"Digite la lista,para hallar su promedio:"),
+%esta es una etiqueta
+     text_out(50,100,"La Lista es:"),    
+     %esta es una caja de texto con el nombre de G_lista
+     edit(G_lista,_,edit_func(),"",235,120,150,28),
+    set_text(print(X),G_lista), 
+    text_out(50,200,"La promedio es:"),
+    promedio(X,P),

@@ -1,0 +1,47 @@
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+%  ESTRUCTURAS DEL LENGUAJE
+%  Elaborado por: Isabella Solarte Sandoval
+%			    Daniela Riascos Urrego
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Aqui definición de hechos y reglas, funciones básicas y recursivas
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+?-window(_, _,crea_ventana(),"Aplicación",150, 50, 450, 450), 
+  window_brush(_, rgb(166, 129, 182)),update_window(_).
+
+%crea el menú
+crea_ventana(init):- 
+menu(pop_up,_,_,archivo(_),"&ARCHIVO"), 
+menu(pop_up,_,_,listas(_),"&LISTAS"),
+menu(pop_up,_,_,logico(_),"&LÓGICO").
+%-----------------PRIMERA PARTE---------
+%crear submenu archivo
+archivo(init):-
+menu(normal,_,_,informacion(_),"&Información").
+informacion(press):-
+window_brush(_, rgb(0, 128, 128)),
+font(10,10,"Courier"),
+text_out(45,70,"Autores:"),
+text_out(50,120,"Isabella Solarte Sandoval"),
+text_out(90,140,"<isabsolarte@unicauca.edu.co>"),
+text_out(50,160,"Daniela Riascos Urrego"),
+text_out(90,180,"<driascos@unicauca.edu.co>").
+%-----------------SEGUNDA PARTE---------
+%crear submenu listas
+listas(init):-
+menu(normal,_,_,borrar_elemento(_),"&Borrar elemento"),
+menu(normal,_,_,concatenar(_),"&Concatenar"),
+menu(normal,_,_,repeticiones_elemento(_),"&Repeticiones elemento").
+%-----------------TERCERA PARTE---------
+%crear submenu listas
+logico(init):-
+menu(normal,_,_,ola_invernal(_),"&Ola invernal").
+
+
+
