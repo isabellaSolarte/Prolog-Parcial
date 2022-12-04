@@ -7,6 +7,26 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Aqui definición de hechos y reglas, funciones básicas y recursivas
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-------------hechos y reglas para ola de calor------------
+%hechos
+padece(gustavo,gripe).
+padece(shakira,hepatitis).
+padece(juanes,intoxicacion).
+padece(francia,hepatitis).
+padece(sofia,gripe).
+
+sintomatologia_sintoma_de(fiebre,gripe).
+sintomatologia_sintoma_de(cansancio,hepatitis).
+sintomatologia_sintoma_de(dolor_estomago,intoxicacion).
+sintomatologia_sintoma_de(cansancio,gripe).
+
+farmaco_suprime_a(aspirina,fiebre).
+farmaco_suprime_a(lomotil,dolor_estomago).
+
+%reglas
+enfermedad_de(X,Y,Linea):-padece(X,Y),Linea:=Linea+50.
+farmaco_alivia(X,Y):-farmaco_suprime_a(X,Z),sintomatologia_sintoma_de(Z,Y).
+persona_toma_farmaco(X,Y):-padece(X,Z),sintomatologia_sintoma_de(A,Z),farmaco_suprime_a(Y,A).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,13 +45,17 @@ menu(pop_up,_,_,logico(_),"&LÓGICO").
 archivo(init):-
 menu(normal,_,_,informacion(_),"&Información").
 informacion(press):-
-window_brush(_, rgb(0, 128, 128)),
+button(_,_,boton_ok(_),"&Aceptar",220,300,150,30),
+window_brush(_, rgb(10, 10, 10)),
 font(10,10,"Courier"),
 text_out(45,70,"Autores:"),
 text_out(50,120,"Isabella Solarte Sandoval"),
 text_out(90,140,"<isabsolarte@unicauca.edu.co>"),
 text_out(50,160,"Daniela Riascos Urrego"),
 text_out(90,180,"<driascos@unicauca.edu.co>").
+boton_ok(press):-
+window_brush(_, rgb(166, 129, 182)),update_window(_),
+close_window(X).
 %-----------------SEGUNDA PARTE---------
 %crear submenu listas
 listas(init):-
@@ -41,7 +65,47 @@ menu(normal,_,_,repeticiones_elemento(_),"&Repeticiones elemento").
 %-----------------TERCERA PARTE---------
 %crear submenu listas
 logico(init):-
-menu(normal,_,_,ola_invernal(_),"&Ola invernal").
+menu(pop_up,_,_,ola_invernal(_),"&Ola invernal").
+ola_invernal(init):-
+menu(normal,_,_,primera_pregunta(_),"&Enfermedad que padece alguien"),
+menu(normal,_,_,segunda_pregunta(_),"&¿Quiénes padecen gripe?"),
+menu(normal,_,_,tercera_pregunta(_),"&¿Quiénes sienten dolor de estómago?"),
+menu(normal,_,_,cuarta_pregunta(_),"&¿Quiénes sienten cansancio?"),
+menu(normal,_,_,quinta_pregunta(_),"&¿Qué farmaco alivia a alguien?").
+%--------------primer menu de ola invernal
+primera_pregunta(press):-
+window(_,_, ventana_primera_pregunta(), "Enfermedad que padece un individuo", 150,50,450,450).
+ventana_primera_pregunta(init):-
+window_brush(_, rgb(0, 128, 128)),
+button(_,_,boton_iniciar1(_),"&Iniciar",320,35,95,30),
+window_brush(_, rgb(10, 10, 10)).
+%si oprime el botón
+boton_iniciar1(press):-
+window_brush(_, rgb(0, 128, 128)),update_window(_),
+read(X,"Digite la persona, para averiguar su enfermedad:"),
+padece(X,E),
+font(20,30,"Courier"),
+text_out(50,130,print(X)),
+font(15,20,"Courier"),
+text_out(50,200,"padece de:"),
+text_out(200,200,print(E)).
+%-----------------segundo menu de ola invernal
+
+segunda_pregunta(press):-
+window(_,_, ventana_segunda_pregunta(), "¿Quiénes padecen gripe?", 150,50,450,450).
+ventana_segunda_pregunta(init):-
+window_brush(_, rgb(0, 128, 128)),
+button(_,_,boton_iniciar2(_),"&Iniciar",320,35,95,30),
+window_brush(_, rgb(10, 10, 10)).
+%si oprime el botón
+boton_iniciar2(press):-
+Linea:=120,
+font(20,30,"Courier"),
+text_out(50,80,"¿Quiénes padecen gripe?"),
+enfermedad_de(X,gripe,Linea),
+text_out(50,Linea,print(X)),ln.
+
+
 
 
 
