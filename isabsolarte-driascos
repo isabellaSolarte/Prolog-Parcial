@@ -7,7 +7,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Aqui definición de hechos y reglas, funciones básicas y recursivas
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%-------------hechos y reglas para ola de calor------------
+%-------------hechos y reglas para ola invernal------------
 %hechos
 padece(gustavo,gripe).
 padece(shakira,hepatitis).
@@ -27,7 +27,7 @@ farmaco_suprime_a(lomotil,dolor_estomago).
 enfermedad_de(X,Y,Linea):-padece(X,Y),Linea:=Linea+50.
 farmaco_alivia(X,Y):-farmaco_suprime_a(X,Z),sintomatologia_sintoma_de(Z,Y).
 persona_toma_farmaco(X,Y):-padece(X,Z),sintomatologia_sintoma_de(A,Z),farmaco_suprime_a(Y,A).
-
+persona_siente(X,Y,Linea):-padece(X,Z),sintomatologia_sintoma_de(Y,Z),Linea:=Linea+50.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -104,7 +104,54 @@ font(20,30,"Courier"),
 text_out(50,80,"¿Quiénes padecen gripe?"),
 enfermedad_de(X,gripe,Linea),
 text_out(50,Linea,print(X)),ln.
+%-----------------tercer menu de ola invernal
+tercera_pregunta(press):-
+window(_,_, ventana_tercera_pregunta(), "¿Quiénes sienten dolor de estómago?", 150,50,450,450).
+ventana_tercera_pregunta(init):-
+window_brush(_, rgb(0, 128, 128)),
+button(_,_,boton_iniciar3(_),"&Iniciar",320,35,95,30),
+window_brush(_, rgb(10, 10, 10)).
+%si oprime el botón
+boton_iniciar3(press):-
+Linea:=120,
+font(15,20,"Courier"),
+text_out(6,80,"¿Quiénes sienten dolor de estómago?"),
+persona_siente(X,dolor_estomago,Linea),
+font(20,30,"Courier"),
+text_out(50,Linea,print(X)),ln.
 
+%-----------------cuarto menu de ola invernal
+cuarta_pregunta(press):-
+window(_,_, ventana_cuarta_pregunta(), "¿Quiénes sienten cansancio?", 150,50,450,450).
+ventana_cuarta_pregunta(init):-
+window_brush(_, rgb(0, 128, 128)),
+button(_,_,boton_iniciar4(_),"&Iniciar",320,35,95,30),
+window_brush(_, rgb(10, 10, 10)).
+%si oprime el botón
+boton_iniciar4(press):-
+Linea:=120,
+font(15,20,"Courier"),
+text_out(40,80,"¿Quiénes sienten cansancio?"),
+persona_siente(X,cansancio,Linea),
+font(20,30,"Courier"),
+text_out(50,Linea,print(X)),ln.
+%-----------------quinto menu de ola invernal
+quinta_pregunta(press):-
+window(_,_, ventana_quinta_pregunta(), "¿Qué farmaco alivia a alguien?", 150,50,450,450).
+ventana_quinta_pregunta(init):-
+window_brush(_, rgb(0, 128, 128)),
+button(_,_,boton_iniciar5(_),"&Iniciar",320,35,95,30),
+window_brush(_, rgb(10, 10, 10)).
+%si oprime el botón
+boton_iniciar5(press):-
+window_brush(_, rgb(0, 128, 128)),update_window(_),
+read(X,"Digite la persona, para saber qué farmaco la aliviará:"),
+persona_toma_farmaco(X,Y),
+font(20,30,"Courier"),
+text_out(50,130,print(X)),
+font(15,20,"Courier"),
+text_out(50,200,"El fármaco que le ayudará es:"),
+text_out(50,250,print(Y)).
 
 
 
