@@ -119,3 +119,4 @@ boton_promedio(press):-read(X,"Digite la lista,para hallar su promedio:"),
     set_text(print(X),G_lista), 
     text_out(50,200,"La promedio es:"),
     promedio(X,P),
+    text_out(235,200,print(P)).
