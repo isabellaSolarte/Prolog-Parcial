@@ -5,7 +5,31 @@
 %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Aqui definición de hechos y reglas, funciones básicas y recursivas
+%Aqui definiciÃƒÂ³n de hechos y reglas, funciones bÃ¡sicas y recursivas
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%--------------------------funciÃ³n bÃ¡sica------------------------------:
+%---------------borrar
+buscar(X,[X|Cola]).
+%si la lista esta vacia, regresa otra vacia
+borrar([],_,[]).
+%-----------CONCATENAR LISTAS
+%Si se ingresa una lista vacia, la concatenacion de [] y Lista es Lista
+concatenar([],Lista,Lista).
+%-----------REPETICION NUMERO
+repeticiones(X,[],0).
+%---------------------------funciÃ³n recursiva-------------------------:
+buscar(X,[Cabeza|Cola]):- buscar(X,Cola).
+%------------fn eliminar
+borrar([Cabeza|Cola1],Elemento,Cola2) :- Cabeza=Elemento, borrar(Cola1,Elemento,Cola2).
+borrar([Cabeza|Cola1],Elemento,[Cabeza|Cola2]) :-not(Cabeza=Elemento), borrar(Cola1,Elemento,Cola2).
+%-----------FN CONCATENAR
+%Si la primera lista su primer elemento es Cabeza y la cola es Cola1,
+%la concatenacion de las dos listas da la Lista2 cuyo resultado es el Primer elemento Cabeza y concatenacion de Cola1 y Cola2
+concatenar([Cabeza|Cola1],Cola2,[Cabeza|ColaResultante]):- concatenar(Cola1,Cola2,ColaResultante).
+%----------FN REPETICION NUMERO
+repeticiones(X,[X|Cola],Cont):- !,repeticiones(X,Cola,Cont1), Cont is Cont1+1.
+repeticiones(Elem,[Cabeza|Cola],Cont):- repeticiones(Elem,Cola,Cont).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %-------------hechos y reglas para ola invernal------------
 %hechos
@@ -31,47 +55,119 @@ persona_siente(X,Y,Linea):-padece(X,Z),sintomatologia_sintoma_de(Y,Z),Linea:=Lin
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-?-window(_, _,crea_ventana(),"Aplicación",150, 50, 450, 450), 
+?-window(_, _,crea_ventana(),"AplicaciÃ³n",150, 50, 450, 450), 
   window_brush(_, rgb(166, 129, 182)),update_window(_).
 
-%crea el menú
+%crea el menÃƒÂº
 crea_ventana(init):- 
 menu(pop_up,_,_,archivo(_),"&ARCHIVO"), 
 menu(pop_up,_,_,listas(_),"&LISTAS"),
-menu(pop_up,_,_,logico(_),"&LÓGICO").
+menu(pop_up,_,_,logico(_),"&LÃ“GICO").
 %-----------------PRIMERA PARTE---------
 %crear submenu archivo
 archivo(init):-
-menu(normal,_,_,informacion(_),"&Información").
+menu(normal,_,_,informacion(_),"&InformaciÃ³n").
 informacion(press):-
-button(_,_,boton_ok(_),"&Aceptar",220,300,150,30),
-window_brush(_, rgb(10, 10, 10)),
+window_brush(_, rgb(0, 128, 128)),
 font(10,10,"Courier"),
 text_out(45,70,"Autores:"),
 text_out(50,120,"Isabella Solarte Sandoval"),
 text_out(90,140,"<isabsolarte@unicauca.edu.co>"),
 text_out(50,160,"Daniela Riascos Urrego"),
 text_out(90,180,"<driascos@unicauca.edu.co>").
-boton_ok(press):-
-window_brush(_, rgb(166, 129, 182)),update_window(_),
-close_window(X).
 %-----------------SEGUNDA PARTE---------
 %crear submenu listas
 listas(init):-
 menu(normal,_,_,borrar_elemento(_),"&Borrar elemento"),
 menu(normal,_,_,concatenar(_),"&Concatenar"),
 menu(normal,_,_,repeticiones_elemento(_),"&Repeticiones elemento").
+%-----------------------------------------------------------------------
+%implementacion BORRAR
+borrar_elemento(press):-
+	window( _, _, ventana_borrar(_), "Borrar elemento en la Lista", 150,50,450,450).
+
+
+
+ventana_borrar(init):- window_brush(_, rgb(166, 129, 182)),
+                    button(_,_,boton_borrar(_),"&Iniciar",320,35,95,30).
+%---- al oprimir el botÃƒÂ³n se procede a buscar el elemento
+
+boton_borrar(press):-
+
+read(X,"Digite la lista en la que se va a eliminar el elemento:"),
+read(Elem,"Digite el elemento que se va a eliminar:"),
+%esta es una etiqueta
+     text_out(50,100,"La Lista es:"),
+     %esta es una caja de texto con el nombre de G_lista
+     edit(G_lista,_,edit_func(_),"",235,120,150,28),
+set_text(print(X),G_lista),
+(buscar(Elem,X)->
+    		text_out(50,200,"La nueva lista es:"),
+  		borrar(X,Elem,Lista),
+		edit(G_lista,_,edit_func(_),"",235,190,150,28),
+		set_text(print(Lista),G_lista)
+else
+message( "InformaciÃ³n", "El elemento no se encuentra en la lista ",s)).
+%---------------------------------------------------------------------------
+%implementacion CONCATENAR
+concatenar(press):-
+	window( _, _, ventana_concatenar(_), "Concatenacion de dos listas", 150,50,450,450).
+
+ventana_concatenar(init):- window_brush(_, rgb(166, 129, 182)),
+                    button(_,_,boton_concatenar(_),"&Iniciar",320,35,95,30).
+
+boton_concatenar(press):-
+	read(L1,"Digite la lista 1 :"),
+     read(L2,"Digite la lista 2 :"),
+%esta es una etiqueta
+     text_out(50,120,"La Lista 1 es:"),
+     %esta es una caja de texto con el nombre de G_lista
+     edit(G_lista,_,edit_func(_),"",235,120,150,28),
+set_text(print(L1),G_lista),
+text_out(50,140,"La Lista 2 es:"),
+     %esta es una caja de texto con el nombre de G_lista
+     edit(G_lista,_,edit_func(_),"",235,140,150,28),
+set_text(print(L2),G_lista),
+     text_out(50,200,"La lista nueva es:"),
+  concatenar(L1,L2,ListaResultante),
+text_out(235,200, print(ListaResultante)).
+%-------------------------------------------------------------------------------
+%implementacion REPETICIONES ELEMENTO
+repeticiones_elemento(press):-
+	window( _, _, ventana_repeticiones(_), "Repeticion de un elemento dentro de la lista", 150,50,450,450).
+
+ventana_repeticiones(init):- window_brush(_, rgb(166, 129, 182)),
+                    button(_,_,boton_repeticiones(_),"&Iniciar",320,35,95,30).
+
+boton_repeticiones(press):-
+
+		read(Lista,"Digite la lista en la que se va a buscar:"),
+		read(Elemento,"Digite el elemento que se va a contar:"),
+		%esta es una etiqueta
+  	   text_out(50,100,"La Lista es:"),
+ 	    edit(G_lista,_,edit_func(_),"",235,100,150,28),
+		set_text(print(Lista),G_lista),
+         
+		(buscar(Elem,Lista)->
+			text_out(50,140,"Elemento a contar es:"),
+	    		text_out(235,140, print(Elemento)),
+			text_out(50,200,"NÃºmero de repeticiones: "),
+			repeticiones(Elemento,Lista,Cont),
+			text_out(235,200, print(Cont))
+		else
+			message( "InformaciÃ³n", "El elemento no se encuentra en la lista ",s)).
+
+
 %-----------------TERCERA PARTE---------
 %crear submenu listas
 logico(init):-
 menu(pop_up,_,_,ola_invernal(_),"&Ola invernal").
 ola_invernal(init):-
 menu(normal,_,_,primera_pregunta(_),"&Enfermedad que padece alguien"),
-menu(normal,_,_,segunda_pregunta(_),"&¿Quiénes padecen gripe?"),
-menu(normal,_,_,tercera_pregunta(_),"&¿Quiénes sienten dolor de estómago?"),
-menu(normal,_,_,cuarta_pregunta(_),"&¿Quiénes sienten cansancio?"),
-menu(normal,_,_,quinta_pregunta(_),"&¿Qué farmaco alivia a alguien?").
+menu(normal,_,_,segunda_pregunta(_),"&Â¿QuiÃ©nes padecen gripe?"),
+menu(normal,_,_,tercera_pregunta(_),"&Â¿QuiÃ©nes sienten dolor de estÃ³mago?"),
+menu(normal,_,_,cuarta_pregunta(_),"&Â¿QuiÃ©nes sienten cansancio?"),
+menu(normal,_,_,quinta_pregunta(_),"&Â¿QuÃ© farmaco alivia a alguien?").
 %--------------primer menu de ola invernal
 primera_pregunta(press):-
 window(_,_, ventana_primera_pregunta(), "Enfermedad que padece un individuo", 150,50,450,450).
@@ -79,7 +175,7 @@ ventana_primera_pregunta(init):-
 window_brush(_, rgb(0, 128, 128)),
 button(_,_,boton_iniciar1(_),"&Iniciar",320,35,95,30),
 window_brush(_, rgb(10, 10, 10)).
-%si oprime el botón
+%si oprime el botÃ³n
 boton_iniciar1(press):-
 window_brush(_, rgb(0, 128, 128)),update_window(_),
 read(X,"Digite la persona, para averiguar su enfermedad:"),
@@ -92,16 +188,16 @@ text_out(200,200,print(E)).
 %-----------------segundo menu de ola invernal
 
 segunda_pregunta(press):-
-window(_,_, ventana_segunda_pregunta(), "¿Quiénes padecen gripe?", 150,50,450,450).
+window(_,_, ventana_segunda_pregunta(), "Â¿QuiÃ©nes padecen gripe?", 150,50,450,450).
 ventana_segunda_pregunta(init):-
 window_brush(_, rgb(0, 128, 128)),
 button(_,_,boton_iniciar2(_),"&Iniciar",320,35,95,30),
 window_brush(_, rgb(10, 10, 10)).
-%si oprime el botón
+%si oprime el botÃ³n
 boton_iniciar2(press):-
 Linea:=120,
 font(20,30,"Courier"),
-text_out(50,80,"¿Quiénes padecen gripe?"),
+text_out(50,80,"Â¿QuiÃ©nes padecen gripe?"),
 enfermedad_de(X,gripe,Linea),
 text_out(50,Linea,print(X)),ln.
 %-----------------tercer menu de ola invernal
@@ -152,7 +248,5 @@ text_out(50,130,print(X)),
 font(15,20,"Courier"),
 text_out(50,200,"El fármaco que le ayudará es:"),
 text_out(50,250,print(Y)).
-
-
 
 
